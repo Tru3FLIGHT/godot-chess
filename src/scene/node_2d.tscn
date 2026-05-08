@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b31uuedf5el5e"]
+
+[ext_resource type="Script" uid="uid://byhdwrdu564tj" path="res://src/scene/squares.gd" id="1_l0hyo"]
+
+[node name="Node2D" type="Node2D" unique_id=1908675537]
+script = ExtResource("1_l0hyo")
+color_primary = Color(0.4421997, 0.33664262, 0.22276568, 1)
+color_secondary = Color(0.7072636, 0.6286418, 0.58509856, 1)
+
+[node name="squares" type="Node2D" parent="." unique_id=834932515]
+
+[node name="Pieces" type="Node2D" parent="." unique_id=1808728207]
