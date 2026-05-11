@@ -36,9 +36,7 @@ func board_to_world(square: Vector2i) -> Vector2:
 	return Vector2(square.x * TILE_SIZE, square.y * TILE_SIZE)
 
 func world_to_board(square: Vector2) -> Vector2i:
-	var board_x = floor(square.x /TILE_SIZE)
-	var board_y = floor(square.y / TILE_SIZE)
-	return Vector2i(board_x,board_y)
+	return Vector2i(floor(square.x/TILE_SIZE), floor(square.y / TILE_SIZE))
 
 @warning_ignore("integer_division")
 func board_to_center(square: Vector2i) -> Vector2:
