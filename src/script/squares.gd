@@ -36,7 +36,14 @@ func board_to_world(square: Vector2i) -> Vector2:
 	return Vector2(square.x * TILE_SIZE, square.y * TILE_SIZE)
 
 func world_to_board(square: Vector2) -> Vector2i:
-	return Vector2i(floor(square.x/TILE_SIZE), floor(square.y / TILE_SIZE))
+	var board := Vector2i(floor(square.x/TILE_SIZE), floor(square.y / TILE_SIZE))
+	if board_valid(board.x) and board_valid(board.y):
+		return board
+	else: 
+		return Vector2i(-1,-1)
+
+func board_valid(num: int) -> bool:
+	return (7 >= num) and (0 <= num)
 
 @warning_ignore("integer_division")
 func board_to_center(square: Vector2i) -> Vector2:
@@ -50,6 +57,11 @@ func make_piece_texture(col: int, row: int) -> AtlasTexture:
 	tex.atlas = ATLAS
 	tex.region = Rect2(col * PIECE_W, row*PIECE_H, PIECE_W, PIECE_H)
 	return tex
+
+func on_screen(board_pos: Vector2i) -> bool:
+	if board_pos >= Vector2i(0,0):
+		return true
+	return false
 
 func make_board():
 	for y in range(BOARD_SIZE):
@@ -67,4 +79,7 @@ func make_board():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	print(world_to_board(get_viewport().get_mouse_position()))
+	var mouse_pos := get_viewport().get_mouse_position()
+	var board_pos := world_to_board(mouse_pos)
+	if on_screen(board_pos):
+		print(board_pos)
