@@ -246,8 +246,8 @@ func algebraic_to_board(square: String) -> Variant:
 	return Vector2i(x, y)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
 	var board_pos := world_to_board(mouse_pos)
 	highlight_square(board_pos)
-	#print(1000/delta)
+	#print(1000/_delta)
