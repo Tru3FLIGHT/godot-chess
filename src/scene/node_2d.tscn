@@ -4,9 +4,14 @@
 
 [node name="Node2D" type="Node2D" unique_id=1908675537]
 script = ExtResource("1_l0hyo")
-color_primary = Color(0.7653274, 0.58532673, 0.42061532, 1)
-color_secondary = Color(0.47406083, 0.37014076, 0.33596146, 1)
+color_primary = Color(0.5882353, 0.41568628, 0.3254902, 1)
+color_secondary = Color(0.89027613, 0.7275494, 0.52104753, 1)
 
 [node name="squares" type="Node2D" parent="." unique_id=834932515]
+
+[node name="highlight" type="ColorRect" parent="squares" unique_id=413778503]
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(1, 1, 1, 0.5019608)
 
 [node name="Pieces" type="Node2D" parent="." unique_id=1808728207]
