@@ -35,6 +35,11 @@ func _ready() -> void:
 func board_to_world(square: Vector2i) -> Vector2:
 	return Vector2(square.x * TILE_SIZE, square.y * TILE_SIZE)
 
+func world_to_board(square: Vector2) -> Vector2i:
+	var board_x = floor(square.x /TILE_SIZE)
+	var board_y = floor(square.y / TILE_SIZE)
+	return Vector2i(board_x,board_y)
+
 @warning_ignore("integer_division")
 func board_to_center(square: Vector2i) -> Vector2:
 	return Vector2(
@@ -62,7 +67,6 @@ func make_board():
 
 			$squares.add_child(square)
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	print(world_to_board(get_viewport().get_mouse_position()))
