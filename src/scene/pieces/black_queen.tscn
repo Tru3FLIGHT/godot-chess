@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bns22d605v6ld"]
+
+[ext_resource type="Texture2D" uid="uid://c30h7y0j44axp" path="res://clipart4559543.png" id="1_k2q7g"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n015x"]
+atlas = ExtResource("1_k2q7g")
+region = Rect2(165, 173, 146, 137)
+
+[node name="Peice" type="TextureRect" unique_id=626525152]
+texture = SubResource("AtlasTexture_n015x")

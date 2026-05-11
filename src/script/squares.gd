@@ -14,6 +14,10 @@ var color_secondary: Color
 @onready var highlight: ColorRect = $squares/highlight
 var last_board_pos := Vector2i(-1,-1)
 
+@onready var peices_layer: Node = $Pieces
+
+var board_state: Dictionary
+
 const PIECE_W := 161
 const PIECE_H := 155
 
@@ -30,6 +34,21 @@ const PIECES := {
 	"black":1
 }
 
+const PIECE_SCENES := {
+	"P": preload("res://src/scene/pieces/white_pawn.tscn"),
+	"R": preload("res://src/scene/pieces/white_rook.tscn"),
+	"N": preload("res://src/scene/pieces/white_knight.tscn"),
+	"B": preload("res://src/scene/pieces/white_bishop.tscn"),
+	"Q": preload("res://src/scene/pieces/white_queen.tscn"),
+	"K": preload("res://src/scene/pieces/white_king.tscn"),
+	"p": preload("res://src/scene/pieces/black_pawn.tscn"),
+	"r": preload("res://src/scene/pieces/black_rook.tscn"),
+	"n": preload("res://src/scene/pieces/black_knight.tscn"),
+	"b": preload("res://src/scene/pieces/black_bishop.tscn"),
+	"q": preload("res://src/scene/pieces/black_queen.tscn"),
+	"k": preload("res://src/scene/pieces/black_king.tscn"),
+}
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -39,6 +58,10 @@ func _ready() -> void:
 	highlight.size = Vector2(TILE_SIZE,TILE_SIZE)
 	highlight.position = board_to_world(last_board_pos)
 	highlight.hide()
+
+	var state := parse_fen(STARTING_STATE)
+	board_state = state["board"]
+	draw_board_state()
 
 
 func board_to_world(square: Vector2i) -> Vector2:
@@ -76,13 +99,33 @@ func board_to_center(square: Vector2i) -> Vector2:
 		square.x * TILE_SIZE + TILE_SIZE /2,
 		square.y * TILE_SIZE + TILE_SIZE /2
 	)
+ 
+func draw_board_state() -> void:
+	for child in peices_layer.get_children():
+		child.queue_free()
 
-func make_piece_texture(col: int, row: int) -> AtlasTexture:
-	var tex := AtlasTexture.new()
-	tex.atlas = ATLAS
-	tex.region = Rect2(col * PIECE_W, row*PIECE_H, PIECE_W, PIECE_H)
-	return tex
+	for square in board_state.keys():
+		var piece: Dictionary = board_state[square]
+		var fen: String = piece["fen"]
 
+		if not PIECE_SCENES.has(fen):
+			push_error("Missing piece scene for FEN: ", fen)
+			continue
+
+	
+		
+		var piece_scene:PackedScene = PIECE_SCENES[fen]
+		var piece_node := piece_scene.instantiate() 
+
+		if piece_node == null:
+			push_error("Piece scene root must be TextureRect: " + fen)
+			continue
+		
+		piece_node.scale = Vector2(0.5, 0.5)
+		var pos := board_to_world(square)
+		piece_node.position = pos
+		peices_layer.add_child(piece_node)
+		
 func on_screen(board_pos: Vector2i) -> bool:
 	if board_pos >= Vector2i(0,0):
 		return true
@@ -122,7 +165,7 @@ func make_piece(fen_char: String) -> Dictionary:
 		"fen": fen_char,
 		"has_moved": false
 	}
-	
+
 func parse_fen_board(fen: String) -> Dictionary:
 	var board := {}
 	var ranks := fen.split("/")
@@ -132,15 +175,32 @@ func parse_fen_board(fen: String) -> Dictionary:
 		push_error("Invalid FEN: Incorrect Number of ranks")
 		return {}
 
-	for rank in ranks:
+	for y in range(8):
 		var x := 0
-		
-		for character in rank:
+		var rank := ranks[y]
+
+		for i in range(len(rank)):
+			var character := rank.substr(i, 1)
 
 			if character in "12345678":
 				x += int(character)
 			else:
+				var peice := make_piece(character)
 
+				if peice.is_empty():
+					push_error("Error Parsing Peice: ", character)
+					return {}
+				if x >= 8:
+					push_error("Incorrect FEN: rank too wide")
+					return {}
+				
+				board[Vector2i(x,y)] = peice
+				x += 1
+		
+		#rank does not account for all 8 places
+		if x != 8:
+			push_error("Incorrect FEN: rank incomplete")
+			return {}
 		
 	return board
 
@@ -165,8 +225,25 @@ func parse_fen(fen: String) -> Dictionary:
 		"fullmove": int(parts[5])
 	}
 
-func algebraic_to_board(algebraic: String) -> Dictionary:
-	return {}
+func algebraic_to_board(square: String) -> Variant:
+	if square == "-":
+		return null
+
+	if square.length() != 2:
+		return null
+
+	var file := square.substr(0, 1)
+	var rank := square.substr(1, 1)
+
+	var files := "abcdefgh"
+	var x := files.find(file)
+	var rank_num := int(rank)
+
+	if x == -1 or rank_num < 1 or rank_num > 8:
+		return null
+
+	var y := 8 - rank_num
+	return Vector2i(x, y)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
