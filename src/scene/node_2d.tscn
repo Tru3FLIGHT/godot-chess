@@ -6,6 +6,7 @@
 script = ExtResource("1_l0hyo")
 color_primary = Color(0.5882353, 0.41568628, 0.3254902, 1)
 color_secondary = Color(0.89027613, 0.7275494, 0.52104753, 1)
+highlight_color = Color(1, 1, 1, 0.54509807)
 
 [node name="squares" type="Node2D" parent="." unique_id=834932515]
 

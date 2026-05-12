@@ -11,6 +11,8 @@ const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 
 var color_primary: Color
 @export
 var color_secondary: Color
+@export
+var highlight_color: Color
 
 var pieceCLass = load("res://src/script/piece.gd")
 
@@ -20,6 +22,8 @@ var last_board_pos := Vector2i(-1,-1)
 @onready var peices_layer: Node = $Pieces
 
 var board_state: Dictionary
+
+var current_board_highlights: Dictionary
 
 const PIECE_W := 161
 const PIECE_H := 155
@@ -58,6 +62,7 @@ func _ready() -> void:
 
 	make_board()
 	highlight.move_to_front()
+	highlight.color = highlight_color
 	highlight.size = Vector2(TILE_SIZE,TILE_SIZE)
 	highlight.position = board_to_world(last_board_pos)
 	highlight.hide()
@@ -77,9 +82,11 @@ func world_to_board(coord: Vector2) -> Vector2i:
 	else: 
 		return Vector2i(-1,-1)
 
-func highlight_square(square: Vector2i) -> void:
+func highlight_under_cursor(square: Vector2i) -> void:
 	if square == last_board_pos:
 		return
+
+	clear_move_highlights()
 
 	if not on_screen(last_board_pos):
 		highlight.show()
@@ -92,6 +99,27 @@ func highlight_square(square: Vector2i) -> void:
 		highlight.hide()
 
 	last_board_pos = square
+
+func new_move_highlight(square: Vector2i) -> void:
+	if not on_screen(square):
+		push_error("Cannot highlight square: ", square, " --- Not on board")
+		return
+	
+	if square in current_board_highlights.keys():
+		return
+
+	current_board_highlights[square] = null
+	var new_highlight := highlight.duplicate()
+
+	$squares/move_highlights.add_child(new_highlight)
+	highlight.show()
+	new_highlight.color = highlight_color
+	new_highlight.position = Vector2(square.x*TILE_SIZE, square.y*TILE_SIZE)
+
+func clear_move_highlights() -> void:
+	current_board_highlights = {}
+	for child in $squares/move_highlights.get_children():
+		child.queue_free()
 
 func board_valid(num: int) -> bool:
 	return (7 >= num) and (0 <= num)
@@ -114,8 +142,6 @@ func draw_board_state() -> void:
 		if not PIECE_SCENES.has(fen):
 			push_error("Missing piece scene for FEN: ", fen)
 			continue
-
-	
 		
 		var piece_scene:PackedScene = PIECE_SCENES[fen]
 		var piece_node := piece_scene.instantiate() as TextureRect
@@ -247,18 +273,12 @@ func algebraic_to_board(square: String) -> Variant:
 	var y := 8 - rank_num
 	return Vector2i(x, y)
 
-func new_move_highlight(square: Vector2i) -> void:
-	if not on_screen(square):
-		push_error("Cannot highlight square: ", square, " - Not on board")
-		return
-
-	var new_highlight := highlight.duplicate()
-
-	$squares/move_highlights.add_child(new_highlight)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
 	var board_pos := world_to_board(mouse_pos)
-	highlight_square(board_pos)
+	highlight_under_cursor(board_pos)
+	var test_move := Vector2i(1,0) + board_pos
+	new_move_highlight(test_move)
 	#print(1000/_delta)
