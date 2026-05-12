@@ -4,8 +4,8 @@ extends Node2D
 const BOARD_SIZE := 8
 const TILE_SIZE := 64
 
-#const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-const STARTING_STATE := "r2qk1nr/p1p1p1pp/5p2/2Bp1bP1/1b1nP2P/5P2/PPPP4/R2QKBNR b KQkq - 0 1"
+const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#const STARTING_STATE := "r2qk1nr/p1p1p1pp/5p2/2Bp1bP1/1b1nP2P/5P2/PPPP4/R2QKBNR b KQkq - 0 1"
 
 @export
 var color_primary: Color
@@ -145,7 +145,7 @@ func make_board():
 
 			$squares.add_child(square)
 
-func make_piece(fen_char: String) -> Dictionary:
+func make_piece(fen_char: String) -> Peice:
 	var color := "white" if fen_char == fen_char.to_upper() else "black"
 	var lower := fen_char.to_lower()
 
@@ -251,3 +251,16 @@ func _process(_delta: float) -> void:
 	var board_pos := world_to_board(mouse_pos)
 	highlight_square(board_pos)
 	#print(1000/_delta)
+
+class Peice:
+
+	var type:		String
+	var color:		String
+	var fen:		String
+	var has_moved:	bool
+
+	func _init(ty: String, col: String, fe: String, moved:bool) -> void:
+		type = ty
+		color = col
+		fen = fe
+		has_moved = moved
