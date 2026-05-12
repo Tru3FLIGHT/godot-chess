@@ -12,6 +12,8 @@ var color_primary: Color
 @export
 var color_secondary: Color
 
+var pieceCLass = load("res://src/script/piece.gd")
+
 @onready var highlight: ColorRect = $squares/highlight
 var last_board_pos := Vector2i(-1,-1)
 
@@ -94,7 +96,7 @@ func highlight_square(square: Vector2i) -> void:
 func board_valid(num: int) -> bool:
 	return (7 >= num) and (0 <= num)
 
-@warning_ignore("integer_division")
+@warning_ignore("INTEGER_DIVISION")
 func board_to_center(square: Vector2i) -> Vector2:
 	return Vector2(
 		square.x * TILE_SIZE + TILE_SIZE /2,
@@ -145,7 +147,7 @@ func make_board():
 
 			$squares.add_child(square)
 
-func make_piece(fen_char: String) -> Peice:
+func make_piece(fen_char: String) -> Dictionary:
 	var color := "white" if fen_char == fen_char.to_upper() else "black"
 	var lower := fen_char.to_lower()
 
@@ -159,12 +161,12 @@ func make_piece(fen_char: String) -> Peice:
 		"k": type = "king"
 		_: return {}
 
-	return {
-		"type": type,
-		"color": color,
-		"fen": fen_char,
+	return {			
+		"type":type,
+		"color":color,
+		"fen":fen_char,
 		"has_moved": false
-	}
+		}
 
 func parse_fen_board(fen: String) -> Dictionary:
 	var board := {}
@@ -245,22 +247,18 @@ func algebraic_to_board(square: String) -> Variant:
 	var y := 8 - rank_num
 	return Vector2i(x, y)
 
+func new_move_highlight(square: Vector2i) -> void:
+	if not on_screen(square):
+		push_error("Cannot highlight square: ", square, " - Not on board")
+		return
+
+	var new_highlight := highlight.duplicate()
+
+	$squares/move_highlights.add_child(new_highlight)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	var mouse_pos := get_viewport().get_mouse_position()
 	var board_pos := world_to_board(mouse_pos)
 	highlight_square(board_pos)
 	#print(1000/_delta)
-
-class Peice:
-
-	var type:		String
-	var color:		String
-	var fen:		String
-	var has_moved:	bool
-
-	func _init(ty: String, col: String, fe: String, moved:bool) -> void:
-		type = ty
-		color = col
-		fen = fe
-		has_moved = moved
