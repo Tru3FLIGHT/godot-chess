@@ -124,8 +124,8 @@ func clear_move_highlights() -> void:
 func board_valid(num: int) -> bool:
 	return (7 >= num) and (0 <= num)
 
-@warning_ignore("INTEGER_DIVISION")
 func board_to_center(square: Vector2i) -> Vector2:
+	@warning_ignore("integer_division")
 	return Vector2(
 		square.x * TILE_SIZE + TILE_SIZE /2,
 		square.y * TILE_SIZE + TILE_SIZE /2
