@@ -7,4 +7,6 @@ atlas = ExtResource("1_c5bdw")
 region = Rect2(872, 14, 94, 122)
 
 [node name="Peice" type="TextureRect" unique_id=626525152]
+offset_transform_enabled = true
+offset_transform_position = Vector2(33, 17)
 texture = SubResource("AtlasTexture_n015x")

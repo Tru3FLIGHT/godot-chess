@@ -4,7 +4,8 @@ extends Node2D
 const BOARD_SIZE := 8
 const TILE_SIZE := 64
 
-const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+const STARTING_STATE := "r2qk1nr/p1p1p1pp/5p2/2Bp1bP1/1b1nP2P/5P2/PPPP4/R2QKBNR b KQkq - 0 1"
 
 @export
 var color_primary: Color
@@ -115,19 +116,18 @@ func draw_board_state() -> void:
 	
 		
 		var piece_scene:PackedScene = PIECE_SCENES[fen]
-		var piece_node := piece_scene.instantiate() 
+		var piece_node := piece_scene.instantiate() as TextureRect
 
 		if piece_node == null:
 			push_error("Piece scene root must be TextureRect: " + fen)
 			continue
 		
-		piece_node.scale = Vector2(0.5, 0.5)
-		var pos := board_to_world(square)
-		piece_node.position = pos
+		piece_node.scale = Vector2(0.40, 0.40)
+		piece_node.position = board_to_world(square)  
 		peices_layer.add_child(piece_node)
 		
 func on_screen(board_pos: Vector2i) -> bool:
-	if board_pos >= Vector2i(0,0):
+	if board_pos >= Vector2i(0,0) and board_pos <= Vector2i(7,7):
 		return true
 	return false
 
