@@ -112,7 +112,7 @@ func new_move_highlight(square: Vector2i) -> void:
 	var new_highlight := highlight.duplicate()
 
 	$squares/move_highlights.add_child(new_highlight)
-	highlight.show()
+	new_highlight.show()
 	new_highlight.color = highlight_color
 	new_highlight.position = Vector2(square.x*TILE_SIZE, square.y*TILE_SIZE)
 
