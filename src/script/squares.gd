@@ -142,8 +142,8 @@ func draw_board_state() -> void:
 		child.queue_free()
 
 	for square in board_state.board.keys():
-		var piece: Dictionary = board_state.board[square]
-		var fen: String = piece["fen"]
+		var piece: Piece = board_state.board[square]
+		var fen: String = piece.fen_char
 
 		if not PIECE_SCENES.has(fen):
 			push_error("Missing piece scene for FEN: ", fen)
@@ -197,7 +197,10 @@ func _process(_delta: float) -> void:
 	#print(1000/_delta)
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.is_pressed():
-		var square := world_to_board(event.position)
-		square_clicked(square)
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			var square := world_to_board(event.position)
+			square_clicked(square)
+		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			clear_move_highlights()
 		

@@ -50,7 +50,7 @@ static func parse_board(fen: String) -> Dictionary:
 					push_error("Incorrect FEN: rank too wide")
 					return {}
 				
-				board[Vector2i(x,y)] = peice
+				board[Vector2i(x,y)] = Piece.new(peice)
 				x += 1
 		
 		#rank does not account for all 8 places
