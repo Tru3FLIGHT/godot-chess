@@ -27,12 +27,21 @@ func has_piece(square: Vector2i) -> bool:
 func get_piece(square: Vector2i) -> Piece:
 	return board.get(square)
 
+func same_color_at(square: Vector2i, piece: Piece) -> bool:
+	var target := get_piece(square)
+	if target != null:
+		return target.get_color() == piece.get_color()
+	return false
+
 func attempt_move(from: Vector2i, to: Vector2i) -> bool:
 	print("attempting move: ", from, " -> ", to)
 	if MoveValidator.is_valid(self, from, to):
 		return move_piece(from, to)
 		
 	return false
+
+func whose_turn() -> Turn:
+	return turn
 
 func move_piece(from: Vector2i, to: Vector2i) -> bool:
 	if not has_piece(from):

@@ -2,7 +2,7 @@ class_name FenParser
 extends RefCounted
 
 static func char_to_piece(fen_char: String) -> Dictionary:
-	var color := Color.WHITE if fen_char == fen_char.to_upper() else Color.BLACK
+	var color := BoardState.Turn.WHITE if fen_char == fen_char.to_upper() else BoardState.Turn.BLACK
 	var lower := fen_char.to_lower()
 
 	var type : Piece.Ptype

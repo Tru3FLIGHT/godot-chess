@@ -140,7 +140,7 @@ func draw_board_state() -> void:
 		var color := piece.get_color()
 		var piece_scene:PackedScene
 
-		if color == Color.WHITE:
+		if color == BoardState.Turn.WHITE:
 			piece_scene = PIECE_SCENES_WHITE.get(piece.get_type())
 		else:
 			piece_scene = PIECE_SCENES_BLACK.get(piece.get_type())
@@ -195,10 +195,10 @@ func try_select_square(square: Vector2i):
 
 func try_target_square(square: Vector2i):
 	if board_state.attempt_move(selected_square, square):
-		clear_move_highlights(true)
 		draw_board_state()
 	else:
 		print("move failed")
+	clear_move_highlights(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -206,9 +206,13 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		clear_move_highlights()
 
+
 	var mouse_pos := to_local(get_viewport().get_mouse_position())
 	var board_pos := world_to_board(mouse_pos)
-	highlight_under_cursor(board_pos)
+	if selected_square == Vector2i(-1,-1) or board_pos in current_board_highlights:
+		highlight_under_cursor(board_pos)
+	else:
+		highlight.hide()
 	#print(1000/_delta)
 
 func _input(event: InputEvent) -> void:
