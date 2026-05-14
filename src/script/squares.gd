@@ -192,6 +192,7 @@ func try_select_square(square: Vector2i):
 
 func try_target_square(square: Vector2i):
 	board_state.attempt_move(selected_square, square)
+	draw_board_state()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:

@@ -2,11 +2,16 @@ class_name BoardState
 extends RefCounted
 
 var board := {}
-var turn := "w"
+var turn: Turn = Turn.WHITE
 var castling := "-"
 var en_passant = null
 var halfmove := 0
 var fullmove := 1
+
+enum Turn {
+	WHITE,
+	BLACK
+}
 
 func _init(data := {}) -> void:
 	board = data.get("board", {})
@@ -24,3 +29,9 @@ func get_piece(square: Vector2i) -> Piece:
 
 func attempt_move(from: Vector2i, to: Vector2i):
 	print("attempting move: ", from, " -> ", to)
+	move_piece(from, to)
+
+func move_piece(from: Vector2i, to: Vector2i):
+	var mover: Piece = board.get(from)
+	board.erase(from)
+	board.set(to, mover)
