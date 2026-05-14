@@ -207,7 +207,6 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			print("left click")
 			var square := world_to_board(to_local(event.position))
 			square_clicked(square)
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:

@@ -12,3 +12,8 @@ func _init(data : Dictionary) -> void:
     fen_char = data.get("fen", "P")
     has_moved = data.get("has_moved", false)
 
+func moved() -> bool:
+    return has_moved
+
+func get_type() -> String:
+    return type

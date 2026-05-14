@@ -21,3 +21,6 @@ func has_piece(square: Vector2i) -> bool:
 
 func get_piece(square: Vector2i) -> Piece:
 	return board.get(square)
+
+func attempt_move(from: Vector2i, to: Vector2i):
+	print("attempting move: ", from, " -> ", to)
