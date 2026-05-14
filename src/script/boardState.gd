@@ -15,7 +15,7 @@ enum Turn {
 
 func _init(data := {}) -> void:
 	board = data.get("board", {})
-	turn = data.get("turn", "w") 
+	turn = data.get("turn", Turn.WHITE) 
 	castling = data.get("castling", "-")
 	en_passant = data.get("en_passant", null)
 	halfmove = data.get("halfmove", 0)

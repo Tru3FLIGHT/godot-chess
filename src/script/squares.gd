@@ -35,19 +35,21 @@ const PIECE_H := 155
 
 const ATLAS := preload("res://clipart4559543.png")
 
-const PIECE_SCENES := {
-	"P": preload("res://src/scene/pieces/white_pawn.tscn"),
-	"R": preload("res://src/scene/pieces/white_rook.tscn"),
-	"N": preload("res://src/scene/pieces/white_knight.tscn"),
-	"B": preload("res://src/scene/pieces/white_bishop.tscn"),
-	"Q": preload("res://src/scene/pieces/white_queen.tscn"),
-	"K": preload("res://src/scene/pieces/white_king.tscn"),
-	"p": preload("res://src/scene/pieces/black_pawn.tscn"),
-	"r": preload("res://src/scene/pieces/black_rook.tscn"),
-	"n": preload("res://src/scene/pieces/black_knight.tscn"),
-	"b": preload("res://src/scene/pieces/black_bishop.tscn"),
-	"q": preload("res://src/scene/pieces/black_queen.tscn"),
-	"k": preload("res://src/scene/pieces/black_king.tscn"),
+const PIECE_SCENES_WHITE := {
+	Piece.Ptype.PAWN: preload("res://src/scene/pieces/white_pawn.tscn"),
+	Piece.Ptype.ROOK: preload("res://src/scene/pieces/white_rook.tscn"),
+	Piece.Ptype.KNIGHT: preload("res://src/scene/pieces/white_knight.tscn"),
+	Piece.Ptype.BISHOP: preload("res://src/scene/pieces/white_bishop.tscn"),
+	Piece.Ptype.QUEEN: preload("res://src/scene/pieces/white_queen.tscn"),
+	Piece.Ptype.KING: preload("res://src/scene/pieces/white_king.tscn"),
+}
+const PIECE_SCENES_BLACK := {
+	Piece.Ptype.PAWN: preload("res://src/scene/pieces/black_pawn.tscn"),
+	Piece.Ptype.ROOK: preload("res://src/scene/pieces/black_rook.tscn"),
+	Piece.Ptype.KNIGHT: preload("res://src/scene/pieces/black_knight.tscn"),
+	Piece.Ptype.BISHOP: preload("res://src/scene/pieces/black_bishop.tscn"),
+	Piece.Ptype.QUEEN: preload("res://src/scene/pieces/black_queen.tscn"),
+	Piece.Ptype.KING: preload("res://src/scene/pieces/black_king.tscn"),
 }
 
 
@@ -137,12 +139,15 @@ func draw_board_state() -> void:
 	for square in board_state.board.keys():
 		var piece: Piece = board_state.board[square]
 		var fen: String = piece.fen_char
+		var color := piece.get_color()
+		var piece_scene:PackedScene
 
-		if not PIECE_SCENES.has(fen):
-			push_error("Missing piece scene for FEN: ", fen)
-			continue
+		if color == Color.WHITE:
+			piece_scene = PIECE_SCENES_WHITE.get(piece.get_type())
+		else:
+			piece_scene = PIECE_SCENES_BLACK.get(piece.get_type())
+
 		
-		var piece_scene:PackedScene = PIECE_SCENES[fen]
 		var piece_node := piece_scene.instantiate() as TextureRect
 
 		if piece_node == null:

@@ -2,17 +2,17 @@ class_name FenParser
 extends RefCounted
 
 static func char_to_piece(fen_char: String) -> Dictionary:
-	var color := "white" if fen_char == fen_char.to_upper() else "black"
+	var color := Color.WHITE if fen_char == fen_char.to_upper() else Color.BLACK
 	var lower := fen_char.to_lower()
 
-	var type := ""
+	var type : Piece.Ptype
 	match lower:
-		"p": type = "pawn"
-		"n": type = "knight"	
-		"b": type = "bishop"
-		"r": type = "rook"
-		"q": type = "queen"
-		"k": type = "king"
+		"p": type = Piece.Ptype.PAWN
+		"n": type = Piece.Ptype.KNIGHT
+		"b": type = Piece.Ptype.BISHOP
+		"r": type = Piece.Ptype.ROOK
+		"q": type = Piece.Ptype.QUEEN
+		"k": type = Piece.Ptype.KING
 		_: return {}
 
 	return {			
@@ -74,7 +74,7 @@ static func parse(fen: String) -> Dictionary:
 
 	return {
 		"board": board,
-		"turn": parts[1],
+		"turn": BoardState.Turn.WHITE if parts[1] == "w" else BoardState.Turn.BLACK,
 		"castling": parts[2],
 		"en_passant": algebraic_to_board(parts[3]),
 		"halfmove": int(parts[4]),
