@@ -27,11 +27,19 @@ func has_piece(square: Vector2i) -> bool:
 func get_piece(square: Vector2i) -> Piece:
 	return board.get(square)
 
-func attempt_move(from: Vector2i, to: Vector2i):
+func attempt_move(from: Vector2i, to: Vector2i) -> bool:
 	print("attempting move: ", from, " -> ", to)
-	move_piece(from, to)
+	if MoveValidator.is_valid(self, from, to):
+		return move_piece(from, to)
+		
+	return false
 
-func move_piece(from: Vector2i, to: Vector2i):
+func move_piece(from: Vector2i, to: Vector2i) -> bool:
+	if not has_piece(from):
+		return false
+
+
 	var mover: Piece = board.get(from)
 	board.erase(from)
 	board.set(to, mover)
+	return true

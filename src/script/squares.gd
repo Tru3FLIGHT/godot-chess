@@ -17,8 +17,6 @@ var highlight_color: Color
 @export
 var selection_color: Color
 
-var pieceCLass = load("res://src/script/piece.gd")
-
 @onready var highlight: ColorRect = $squares/highlight
 var last_board_pos := Vector2i(-1,-1)
 
@@ -196,8 +194,11 @@ func try_select_square(square: Vector2i):
 	new_move_highlight(square, true)
 
 func try_target_square(square: Vector2i):
-	board_state.attempt_move(selected_square, square)
-	draw_board_state()
+	if board_state.attempt_move(selected_square, square):
+		clear_move_highlights(true)
+		draw_board_state()
+	else:
+		print("move failed")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:

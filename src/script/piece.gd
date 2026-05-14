@@ -17,7 +17,7 @@ enum Ptype {
 
 
 func _init(data : Dictionary) -> void:
-    type = data.get("type", "pawn")
+    type = data.get("type", Ptype.PAWN)
     color= data.get("color", Color.WHITE)
     fen_char = data.get("fen", "P")
     has_moved = data.get("has_moved", false)
