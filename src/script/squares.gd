@@ -26,23 +26,14 @@ var last_board_pos := Vector2i(-1,-1)
 
 var board_state: BoardState
 
-var current_board_highlights: Dictionary
+var current_board_highlights: Dictionary = {}
+
+var selected_square:= Vector2i(-1,-1)
 
 const PIECE_W := 161
 const PIECE_H := 155
 
 const ATLAS := preload("res://clipart4559543.png")
-
-const PIECES := {
-	"king":0,
-	"queen":1,
-	"bishop":2,
-	"knight":3,
-	"rook":4,
-	"pawn":5,
-	"white":0,
-	"black":1
-}
 
 const PIECE_SCENES := {
 	"P": preload("res://src/scene/pieces/white_pawn.tscn"),
@@ -132,8 +123,10 @@ func new_move_highlight(square: Vector2i, selection := false) -> void:
 
 	new_highlight.position = Vector2(square.x*TILE_SIZE, square.y*TILE_SIZE)
 
-func clear_move_highlights() -> void:
+func clear_move_highlights(clear_selection:=true) -> void:
 	current_board_highlights = {}
+	if clear_selection:
+		selected_square = Vector2i(-1,-1)
 	for child in $squares/move_highlights.get_children():
 		child.queue_free()
 
@@ -183,7 +176,22 @@ func square_clicked(square: Vector2i) -> void:
 	if not on_screen(square):
 		clear_move_highlights()
 		return
+
+	if selected_square == Vector2i(-1,-1):
+		try_select_square(square)
+	else:
+		try_target_square(square)
+
+func try_select_square(square: Vector2i):
+	if not board_state.has_piece(square):
+		return
+	
+	clear_move_highlights(false)
+	selected_square = square
 	new_move_highlight(square, true)
+
+func try_target_square(square: Vector2i):
+	board_state.attempt_move(selected_square, square)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -191,7 +199,7 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		clear_move_highlights()
 
-	var mouse_pos := get_viewport().get_mouse_position()
+	var mouse_pos := to_local(get_viewport().get_mouse_position())
 	var board_pos := world_to_board(mouse_pos)
 	highlight_under_cursor(board_pos)
 	#print(1000/_delta)
@@ -199,7 +207,8 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			var square := world_to_board(event.position)
+			print("left click")
+			var square := world_to_board(to_local(event.position))
 			square_clicked(square)
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			clear_move_highlights()

@@ -15,3 +15,9 @@ func _init(data := {}) -> void:
 	en_passant = data.get("en_passant", null)
 	halfmove = data.get("halfmove", 0)
 	fullmove = data.get("fullmove", 1)
+
+func has_piece(square: Vector2i) -> bool:
+	return board.has(square)
+
+func get_piece(square: Vector2i) -> Piece:
+	return board.get(square)

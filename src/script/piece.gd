@@ -7,7 +7,7 @@ var fen_char:   String
 var has_moved:= false
 
 func _init(data : Dictionary) -> void:
-    type = data.get("type", "p")
+    type = data.get("type", "pawn")
     color= data.get("color", "white")
     fen_char = data.get("fen", "P")
     has_moved = data.get("has_moved", false)

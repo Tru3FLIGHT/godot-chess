@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://b31uuedf5el5e"]
 
-[ext_resource type="Script" uid="uid://b1htrgkk5yt21" path="res://src/script/squares.gd" id="1_l0hyo"]
+[ext_resource type="Script" uid="uid://b1htrgkk5yt21" path="res://src/script/squares.gd" id="1_uxslt"]
 
 [node name="Node2D" type="Node2D" unique_id=1908675537]
-script = ExtResource("1_l0hyo")
+script = ExtResource("1_uxslt")
 color_primary = Color(0.5882353, 0.41568628, 0.3254902, 1)
 color_secondary = Color(0.89027613, 0.7275494, 0.52104753, 1)
 highlight_color = Color(1, 1, 1, 0.54509807)
