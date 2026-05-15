@@ -67,3 +67,22 @@ func move_piece(origin: Vector2i, target: Vector2i) -> bool:
 	board.set(target, origin_piece)
 	origin_piece.has_moved = true
 	return true
+
+func copy() -> BoardState:
+	var coppied_board := {}
+
+	for square in board.keys():
+		coppied_board[square] = board[square].copy()
+
+	return BoardState.new({
+		"board": coppied_board,
+		"turn":turn,
+		"castling":castling,
+		"en_passant":en_passant,
+		"halfmove":halfmove,
+		"fullmove":fullmove
+	})
+
+func _notification(what: int) -> void:
+	if (what == NOTIFICATION_PREDELETE):
+		print("freeing BoardState")

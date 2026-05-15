@@ -35,3 +35,11 @@ func opposite_color() -> BoardState.Turn:
 	if color == BoardState.Turn.WHITE:
 		return BoardState.Turn.BLACK
 	return BoardState.Turn.WHITE
+
+func copy() -> Piece:
+	return Piece.new({
+		"type": type,
+		"color": color,
+		"fen":fen_char,
+		"has_moved":has_moved
+	})
