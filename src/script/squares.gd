@@ -60,6 +60,8 @@ func _ready() -> void:
 	board_state = BoardState.new(state)
 	draw_board_state()
 
+	gen_possible_moves(board_state.whose_turn())
+
 
 func board_to_world(square: Vector2i) -> Vector2:
 	return Vector2(square.x * TILE_SIZE, square.y * TILE_SIZE)
@@ -187,6 +189,7 @@ func try_select_square(square: Vector2i):
 func try_target_square(square: Vector2i):
 	if board_state.attempt_move(selected_square, square):
 		draw_board_state()
+		gen_possible_moves(board_state.whose_turn())
 	else:
 		print("move failed")
 	clear_move_highlights(true)
