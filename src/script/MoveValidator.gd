@@ -14,7 +14,6 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
     
     var origin_piece := state.get_piece(origin)
     
-
     if state.same_color_at(target, origin):
         if verbose:
             push_error("Illigal move: cannot move onto your own piece")
@@ -31,11 +30,11 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
         Piece.Ptype.KING:
             return king_move_valid(state, origin, target)
         Piece.Ptype.ROOK:
-            return true
+            return rook_move_valid(state, origin, target)
         Piece.Ptype.BISHOP:
-            return true
+            return bishop_move_valid(state, origin, target)
         Piece.Ptype.QUEEN:
-            return true
+            return queen_move_valid(state, origin, target)
         Piece.Ptype.PAWN:
             return true
 
@@ -70,3 +69,35 @@ const KING_OFFSETS := [
 static func king_move_valid(_state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
     var delta := target - origin
     return delta in KING_OFFSETS
+
+static func path_clear(state: BoardState, origin: Vector2i, target: Vector2i, direction: Vector2i) -> bool:
+    var current := origin + direction
+
+    while current != target:
+        if state.has_piece(current):
+            return false
+        current += direction
+    
+    return true
+
+static func rook_move_valid(state: BoardState, origin: Vector2i, target:Vector2i) -> bool:
+    var delta := target - origin
+
+    if delta.x != 0 and delta.y !=0:
+        return false
+
+    var direction := Vector2i(sign(delta.x), sign(delta.y))
+
+    return path_clear(state, origin, target, direction)
+
+static func bishop_move_valid(state: BoardState, origin: Vector2i, target:Vector2i) -> bool:
+    var delta := target - origin
+
+    if abs(delta.x) != abs(delta.y):
+        return false
+    
+    var dierection := Vector2i(sign(delta.x), sign(delta.y))
+    return path_clear(state, origin, target, dierection)
+
+static func queen_move_valid(state: BoardState, origin:Vector2i, target:Vector2i) -> bool:
+    return rook_move_valid(state, origin, target) or bishop_move_valid(state, origin, target)

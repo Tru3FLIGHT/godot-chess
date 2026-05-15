@@ -48,7 +48,6 @@ func move_piece(origin: Vector2i, target: Vector2i) -> bool:
 	if not has_piece(origin):
 		return false
 
-
 	var origin_piece: Piece = board.get(origin)
 	board.erase(origin)
 	board.set(target, origin_piece)
