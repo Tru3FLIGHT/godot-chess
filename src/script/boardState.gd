@@ -42,9 +42,10 @@ func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
 func attempt_move(origin: Vector2i, target: Vector2i) -> bool:
 	print("attempting move: ", origin, " -> ", target)
 	if MoveValidator.is_valid(self, origin, target):
+		if not move_piece(origin, target):
+			return false
 		swap_turn()
-		return move_piece(origin, target)
-		
+		return true
 	return false
 
 func whose_turn() -> Turn:

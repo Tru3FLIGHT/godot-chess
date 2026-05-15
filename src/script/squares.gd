@@ -204,7 +204,6 @@ func show_vaild_moves(square: Vector2i):
 	for move in valid_moves:
 		new_move_highlight(move)
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 
