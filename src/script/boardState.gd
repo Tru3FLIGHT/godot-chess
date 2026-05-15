@@ -13,6 +13,11 @@ enum Turn {
 	BLACK
 }
 
+func turn_to_string() -> String:
+	if turn == Turn.WHITE:
+		return "White"
+	return "Black"
+
 func _init(data := {}) -> void:
 	board = data.get("board", {})
 	turn = data.get("turn", Turn.WHITE) 
@@ -37,12 +42,17 @@ func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
 func attempt_move(origin: Vector2i, target: Vector2i) -> bool:
 	print("attempting move: ", origin, " -> ", target)
 	if MoveValidator.is_valid(self, origin, target):
+		swap_turn()
 		return move_piece(origin, target)
 		
 	return false
 
 func whose_turn() -> Turn:
 	return turn
+
+func swap_turn():
+	turn = Turn.BLACK if turn == Turn.WHITE else Turn.WHITE
+	print(turn_to_string(),"'s turn")
 
 func move_piece(origin: Vector2i, target: Vector2i) -> bool:
 	if not has_piece(origin):
