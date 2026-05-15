@@ -45,7 +45,7 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
 
 	return move_keeps_king_safe(state, origin, target)
 
-static func can_attack(state: BoardState, origin: Vector2i, target: Vector2i, verbose := false) -> bool:
+static func can_attack(state: BoardState, origin: Vector2i, target: Vector2i, _verbose := false) -> bool:
 	var origin_piece := state.get_piece(origin)
 
 	match origin_piece.get_type():
