@@ -27,10 +27,11 @@ func has_piece(square: Vector2i) -> bool:
 func get_piece(square: Vector2i) -> Piece:
 	return board.get(square)
 
-func same_color_at(square: Vector2i, piece: Piece) -> bool:
-	var target := get_piece(square)
-	if target != null:
-		return target.get_color() == piece.get_color()
+func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
+	var orig_piece := get_piece(origin)
+	var target_piece := get_piece(target)
+	if orig_piece != null and target_piece != null:
+		return orig_piece.get_color() == target_piece.get_color()
 	return false
 
 func attempt_move(origin: Vector2i, target: Vector2i) -> bool:

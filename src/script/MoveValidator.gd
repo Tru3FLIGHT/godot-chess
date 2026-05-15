@@ -13,7 +13,7 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> b
     var origin_piece := state.get_piece(origin)
     
 
-    if state.same_color_at(target, origin_piece):
+    if state.same_color_at(target, origin):
         push_error("Illigal move: cannot move onto your own piece")
         return false
 
@@ -53,8 +53,5 @@ static func knight_move_valid(state: BoardState, origin: Vector2i, target: Vecto
         push_error("Validator Error: Knight Move function called on incorrect piece ", state.get_piece(origin).get_type())
         return false
 
-    for offset in KNIGHT_OFFSETS:
-        if origin + offset == target:
-            return true
-    
-    return false
+    var delta := target - origin
+    return delta in KNIGHT_OFFSETS
