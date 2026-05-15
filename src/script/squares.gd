@@ -182,6 +182,7 @@ func try_select_square(square: Vector2i):
 	clear_move_highlights(false)
 	selected_square = square
 	new_move_highlight(square, true)
+	show_vaild_moves(square)
 
 func try_target_square(square: Vector2i):
 	if board_state.attempt_move(selected_square, square):
@@ -189,6 +190,21 @@ func try_target_square(square: Vector2i):
 	else:
 		print("move failed")
 	clear_move_highlights(true)
+
+func show_vaild_moves(square: Vector2i):
+	if not board_state.has_piece(square):
+		return
+
+	var valid_moves:= []
+	for y in range(8):
+		for x in range(8):
+			var valid := MoveValidator.is_valid(board_state, square, Vector2i(x,y))
+			if valid:
+				valid_moves.append(Vector2i(x,y))
+	
+	for move in valid_moves:
+		new_move_highlight(move)
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -206,7 +222,7 @@ func _process(_delta: float) -> void:
 		highlight_under_cursor(board_pos)
 	else:
 		highlight.hide()
-	#print(1000/_delta)
+
 
 	last_board_pos = board_pos
 
