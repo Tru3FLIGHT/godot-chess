@@ -30,7 +30,7 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
 		Piece.Ptype.KNIGHT:
 			shape_valid = knight_shape_valid(state, origin, target)
 		Piece.Ptype.KING:
-			shape_valid = king_move_valid(state, origin, target)
+			shape_valid = king_shape_valid(state, origin, target)
 		Piece.Ptype.ROOK:
 			shape_valid = rook_shape_valid(state, origin, target)
 		Piece.Ptype.BISHOP:
@@ -103,12 +103,6 @@ const KING_OFFSETS := [
 static func king_shape_valid(_state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
 	var delta := target - origin
 	return delta in KING_OFFSETS
-
-static func king_move_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	if king_shape_valid(state, origin, target):
-		var attacking_color := state.get_piece(origin).opposite_color()
-		return not is_square_attacked(state, target, attacking_color)
-	return false
 
 static func is_square_attacked(state: BoardState, square: Vector2i, by_color: BoardState.Turn) -> bool:
 	for occupied in state.get_occupied_squares():
