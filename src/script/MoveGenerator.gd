@@ -145,3 +145,21 @@ static func pawn_capture(state: BoardState, target: Vector2i, pawn: Piece) -> bo
 			return state.get_piece(target).get_color() != pawn.get_color()
 	return false
 			
+static func gen_pseudo_moves(state: BoardState, origin: Vector2i) -> Array:
+	var piece := state.get_piece(origin)
+
+	match piece.get_type():
+		Piece.Ptype.KNIGHT:
+			return gen_knight_pseudo(state, origin)
+		Piece.Ptype.KING:
+			return gen_king_pseudo(state, origin)
+		Piece.Ptype.ROOK:
+			return gen_rook_pseudo(state, origin)
+		Piece.Ptype.BISHOP:
+			return gen_bishop_pseudo(state, origin)
+		Piece.Ptype.QUEEN:
+			return gen_queen_pseudo(state, origin)
+		Piece.Ptype.PAWN:
+			return gen_pawn_pseudo(state, origin)
+
+	return []

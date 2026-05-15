@@ -1,46 +1,22 @@
 class_name MoveValidator
 extends RefCounted
 
-static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verbose := false) -> bool:
+static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, _verbose := false) -> bool:
 	if origin == target:
-		if verbose:
-			push_error("Position error: cannot move target the same space")
 		return false
 
 	if not state.has_piece(origin):
-		if verbose:
-			push_error("Position error: no piece located at: ", origin)
 		return false
-	
+
 	if state.same_color_at(target, origin):
-		if verbose:
-			push_error("Illigal move: cannot move onto your own piece")
 		return false
 
 	var origin_piece := state.get_piece(origin)
 
 	if state.whose_turn() != origin_piece.get_color():
-		if verbose:
-			push_error("Illigal move: it is not that player's turn")
 		return false
 
-	var shape_valid := false
-    
-	match origin_piece.get_type():
-		Piece.Ptype.KNIGHT:
-			shape_valid = knight_shape_valid(state, origin, target)
-		Piece.Ptype.KING:
-			shape_valid = king_shape_valid(state, origin, target)
-		Piece.Ptype.ROOK:
-			shape_valid = rook_shape_valid(state, origin, target)
-		Piece.Ptype.BISHOP:
-			shape_valid = bishop_shape_valid(state, origin, target)
-		Piece.Ptype.QUEEN:
-			shape_valid = queen_shape_valid(state, origin, target)
-		Piece.Ptype.PAWN:
-			shape_valid = pawn_shape_valid(state, origin, target)
-
-	if not shape_valid:
+	if target not in MoveGenerator.gen_pseudo_moves(state, origin):
 		return false
 
 	return move_keeps_king_safe(state, origin, target)
@@ -67,10 +43,13 @@ static func can_attack(state: BoardState, origin: Vector2i, target: Vector2i, _v
 
 static func get_valid_moves(state: BoardState, origin: Vector2i) -> Array:
 	var valid_moves := []
-	for y in range(8):
-		for x in range(8):
-			if is_valid(state, origin, Vector2i(x, y)):
-				valid_moves.append(Vector2i(x, y))
+
+	if not state.has_piece(origin):
+		return valid_moves
+
+	for target in MoveGenerator.gen_pseudo_moves(state, origin):
+		if move_keeps_king_safe(state, origin, target):
+			valid_moves.append(target)
 
 	return valid_moves
 

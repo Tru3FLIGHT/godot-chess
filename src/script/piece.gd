@@ -5,6 +5,7 @@ var type :Ptype
 var color:BoardState.Turn
 var fen_char: String
 var has_moved:= false
+var moves := []
 
 enum Ptype {
 	PAWN,
@@ -35,6 +36,15 @@ func opposite_color() -> BoardState.Turn:
 	if color == BoardState.Turn.WHITE:
 		return BoardState.Turn.BLACK
 	return BoardState.Turn.WHITE
+
+func get_moves() -> Array:
+	return moves
+
+func clear_moves():
+	moves = []
+
+func set_moves(new: Array):
+	moves = new
 
 func copy() -> Piece:
 	return Piece.new({

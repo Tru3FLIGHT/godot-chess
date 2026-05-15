@@ -191,11 +191,17 @@ func try_target_square(square: Vector2i):
 		print("move failed")
 	clear_move_highlights(true)
 
+func gen_possible_moves(color : BoardState.Turn):
+	var squares := board_state.get_color(color)
+	for square in squares:
+		var moves := MoveValidator.get_valid_moves(board_state, square)
+		board_state.get_piece(square).set_moves(moves)
+
 func show_vaild_moves(square: Vector2i):
 	if not board_state.has_piece(square):
 		return
 
-	var valid_moves := MoveValidator.get_valid_moves(board_state, square)
+	var valid_moves := board_state.get_piece(square).get_moves()
 	
 	for move in valid_moves:
 		new_move_highlight(move)

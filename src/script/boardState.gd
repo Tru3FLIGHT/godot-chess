@@ -35,6 +35,16 @@ func get_piece(square: Vector2i) -> Piece:
 func get_occupied_squares() -> Array:
 	return board.keys()
 
+func get_color(color : Turn) -> Array:
+	var pieces := []
+	var squares := get_occupied_squares()
+	for square in squares:
+		if get_piece(square).get_color() == color:
+			pieces.append(square)
+
+	return pieces
+
+
 func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
 	var orig_piece := get_piece(origin)
 	var target_piece := get_piece(target)
@@ -43,18 +53,21 @@ func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
 	return false
 
 func attempt_move(origin: Vector2i, target: Vector2i) -> bool:
-	print("attempting move: ", origin, " -> ", target)
-	if MoveValidator.is_valid(self, origin, target):
+	
+	if target in get_piece(origin).get_moves():
 		if not move_piece(origin, target):
 			return false
-		swap_turn()
+		end_turn()
 		return true
 	return false
 
 func whose_turn() -> Turn:
 	return turn
 
-func swap_turn():
+func end_turn():
+	for square in get_occupied_squares():
+		get_piece(square).clear_moves()
+
 	turn = Turn.BLACK if turn == Turn.WHITE else Turn.WHITE
 	print(turn_to_string(),"'s turn")
 
