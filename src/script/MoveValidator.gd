@@ -29,7 +29,7 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
         Piece.Ptype.KNIGHT:
             return knight_move_valid(state, origin, target)
         Piece.Ptype.KING:
-            return true
+            return king_move_valid(state, origin, target)
         Piece.Ptype.ROOK:
             return true
         Piece.Ptype.BISHOP:
@@ -52,10 +52,21 @@ const KNIGHT_OFFSETS := [
     Vector2i(-1,2)
 ]
 
-static func knight_move_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-    if state.get_piece(origin).get_type() != Piece.Ptype.KNIGHT:
-        push_error("Validator Error: Knight Move function called on incorrect piece ", state.get_piece(origin).get_type())
-        return false
-
+static func knight_move_valid(_state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
     var delta := target - origin
     return delta in KNIGHT_OFFSETS
+
+const KING_OFFSETS := [
+    Vector2i(1,1),
+    Vector2i(-1,-1),
+    Vector2i(-1,1),
+    Vector2i(1,-1),
+    Vector2i(-1,0),
+    Vector2i(1,0),
+    Vector2i(0,1),
+    Vector2i(0,-1)
+]
+
+static func king_move_valid(_state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
+    var delta := target - origin
+    return delta in KING_OFFSETS
