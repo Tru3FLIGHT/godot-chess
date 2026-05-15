@@ -32,6 +32,9 @@ func has_piece(square: Vector2i) -> bool:
 func get_piece(square: Vector2i) -> Piece:
 	return board.get(square)
 
+func get_occupied_squares() -> Array:
+	return board.keys()
+
 func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
 	var orig_piece := get_piece(origin)
 	var target_piece := get_piece(target)

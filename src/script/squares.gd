@@ -195,11 +195,7 @@ func show_vaild_moves(square: Vector2i):
 	if not board_state.has_piece(square):
 		return
 
-	var valid_moves:= []
-	for y in range(8):
-		for x in range(8):
-			if MoveValidator.is_valid(board_state, square, Vector2i(x,y)):
-				valid_moves.append(Vector2i(x,y))
+	var valid_moves := MoveValidator.get_valid_moves(board_state, square)
 	
 	for move in valid_moves:
 		new_move_highlight(move)
