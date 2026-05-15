@@ -7,26 +7,31 @@ var fen_char: String
 var has_moved:= false
 
 enum Ptype {
-    PAWN,
-    KNIGHT,
-    BISHOP,
-    ROOK,
-    QUEEN,
-    KING
+	PAWN,
+	KNIGHT,
+	BISHOP,
+	ROOK,
+	QUEEN,
+	KING
 }
 
 
 func _init(data : Dictionary) -> void:
-    type = data.get("type", Ptype.PAWN)
-    color= data.get("color", BoardState.Turn.WHITE)
-    fen_char = data.get("fen", "P")
-    has_moved = data.get("has_moved", false)
+	type = data.get("type", Ptype.PAWN)
+	color= data.get("color", BoardState.Turn.WHITE)
+	fen_char = data.get("fen", "P")
+	has_moved = data.get("has_moved", false)
 
 func moved() -> bool:
-    return has_moved
+	return has_moved
 
 func get_type() -> Ptype:
-    return type
+	return type
 
 func get_color() -> BoardState.Turn:
-    return color
+	return color
+	
+func opposite_color() -> BoardState.Turn:
+	if color == BoardState.Turn.WHITE:
+		return BoardState.Turn.BLACK
+	return BoardState.Turn.WHITE

@@ -6,7 +6,7 @@ const TILE_SIZE := 64
 
 
 const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#const STARTING_STATE := "r2qk1nr/p1p1p1pp/5p2/2Bp1bP1/1b1nP2P/5P2/PPPP4/R2QKBNR b KQkq - 0 1"
+#const STARTING_STATE := "3k4/8/8/8/8/8/8/4K3 b KQkq - 0 1"
 
 @export
 var color_primary: Color
