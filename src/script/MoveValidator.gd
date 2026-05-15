@@ -12,12 +12,12 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
             push_error("Position error: no piece located at: ", origin)
         return false
     
-    var origin_piece := state.get_piece(origin)
-    
     if state.same_color_at(target, origin):
         if verbose:
             push_error("Illigal move: cannot move onto your own piece")
         return false
+
+    var origin_piece := state.get_piece(origin)
 
     if state.whose_turn() != origin_piece.get_color():
         if verbose:
@@ -36,7 +36,7 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, verb
         Piece.Ptype.QUEEN:
             return queen_move_valid(state, origin, target)
         Piece.Ptype.PAWN:
-            return true
+            return pawn_move_valid(state, origin, target)
 
     return false
 
@@ -101,3 +101,29 @@ static func bishop_move_valid(state: BoardState, origin: Vector2i, target:Vector
 
 static func queen_move_valid(state: BoardState, origin:Vector2i, target:Vector2i) -> bool:
     return rook_move_valid(state, origin, target) or bishop_move_valid(state, origin, target)
+
+static func pawn_move_valid(state:BoardState, origin:Vector2i,target:Vector2i) -> bool:
+    var pawn := state.get_piece(origin)
+    var white_dir = -1
+    var black_dir = 1
+    var dir: int
+
+    if pawn.get_color() == BoardState.Turn.WHITE:
+        dir = white_dir
+    else:
+        dir = black_dir
+
+    var delta := target - origin
+
+    if delta == Vector2i(0,dir):
+        return not state.has_piece(target)
+
+    if not pawn.has_moved and delta == Vector2i(0,dir*2):
+        #is there a blocker inbetween?
+        var middle := origin + Vector2i(0,dir)
+        return not state.has_piece(target) and not state.has_piece(middle)
+
+    if abs(delta.x) == 1 and delta.y == dir:
+        return state.has_piece(target)
+    
+    return false

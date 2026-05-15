@@ -51,4 +51,5 @@ func move_piece(origin: Vector2i, target: Vector2i) -> bool:
 	var origin_piece: Piece = board.get(origin)
 	board.erase(origin)
 	board.set(target, origin_piece)
+	origin_piece.has_moved = true
 	return true
