@@ -33,22 +33,22 @@ func same_color_at(square: Vector2i, piece: Piece) -> bool:
 		return target.get_color() == piece.get_color()
 	return false
 
-func attempt_move(from: Vector2i, to: Vector2i) -> bool:
-	print("attempting move: ", from, " -> ", to)
-	if MoveValidator.is_valid(self, from, to):
-		return move_piece(from, to)
+func attempt_move(origin: Vector2i, target: Vector2i) -> bool:
+	print("attempting move: ", origin, " -> ", target)
+	if MoveValidator.is_valid(self, origin, target):
+		return move_piece(origin, target)
 		
 	return false
 
 func whose_turn() -> Turn:
 	return turn
 
-func move_piece(from: Vector2i, to: Vector2i) -> bool:
-	if not has_piece(from):
+func move_piece(origin: Vector2i, target: Vector2i) -> bool:
+	if not has_piece(origin):
 		return false
 
 
-	var mover: Piece = board.get(from)
-	board.erase(from)
-	board.set(to, mover)
+	var origin_piece: Piece = board.get(origin)
+	board.erase(origin)
+	board.set(target, origin_piece)
 	return true
