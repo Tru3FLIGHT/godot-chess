@@ -28,11 +28,6 @@ var current_board_highlights: Dictionary = {}
 
 var selected_square:= Vector2i(-1,-1)
 
-const PIECE_W := 161
-const PIECE_H := 155
-
-const ATLAS := preload("res://clipart4559543.png")
-
 const PIECE_SCENES_WHITE := {
 	Piece.Ptype.PAWN: preload("res://src/scene/pieces/white_pawn.tscn"),
 	Piece.Ptype.ROOK: preload("res://src/scene/pieces/white_rook.tscn"),
@@ -76,7 +71,6 @@ func world_to_board(coord: Vector2) -> Vector2i:
 	else: 
 		return Vector2i(-1,-1)
 
-
 func board_valid(num: int) -> bool:
 	return (7 >= num) and (0 <= num)
 
@@ -91,17 +85,13 @@ func highlight_under_cursor(square: Vector2i) -> void:
 	if square == last_board_pos:
 		return
 
-	if not on_screen(last_board_pos):
-		highlight.show()
-
-
 	if on_screen(square):
+		if not highlight.visible:
+			highlight.show()
 		print("Square: ", square)
 		highlight.position = Vector2(square.x*TILE_SIZE, square.y*TILE_SIZE)
 	else:
 		highlight.hide()
-
-	last_board_pos = square
 
 func new_move_highlight(square: Vector2i, selection := false) -> void:
 	if not on_screen(square):
@@ -206,6 +196,9 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		clear_move_highlights()
 
+	if Input.is_action_just_pressed("DEBUG-PRINT_SELECTED"):
+		print(selected_square)
+
 
 	var mouse_pos := to_local(get_viewport().get_mouse_position())
 	var board_pos := world_to_board(mouse_pos)
@@ -214,6 +207,8 @@ func _process(_delta: float) -> void:
 	else:
 		highlight.hide()
 	#print(1000/_delta)
+
+	last_board_pos = board_pos
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
