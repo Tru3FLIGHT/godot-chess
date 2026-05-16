@@ -68,8 +68,7 @@ static func gen_offset_pseudo(state: BoardState, origin: Vector2i, offset_arr: A
 		if not on_board(target):
 			continue
 		
-		if state.has_piece(target):
-			if state.same_color_at(origin, target):
+		if state.has_piece(target) and state.same_color_at(origin, target):
 				continue
 		
 		moves.append(target)
@@ -114,14 +113,14 @@ static func gen_pawn_pseudo(state: BoardState, origin: Vector2i) -> Array:
 		starting_rank = 1
 
 	var move_one := origin + Vector2i(0, movement_dir)
-	if on_board(move_one):
-		if not state.has_piece(move_one):
-			moves.append(move_one)
+	if on_board(move_one) and not state.has_piece(move_one):
+		moves.append(move_one)
 
-	if origin.y == starting_rank:
-		var move_two := origin + Vector2i(0, 2*movement_dir)
-		if on_board(move_two):
-			if not state.has_piece(move_two) and not state.has_piece(move_one):
+		if origin.y == starting_rank:
+
+			var move_two := origin + Vector2i(0, 2*movement_dir)
+			if on_board(move_two) and not state.has_piece(move_two):
+
 				moves.append(move_two)
 
 	var capture_offsets := [
