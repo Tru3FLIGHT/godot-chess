@@ -24,22 +24,13 @@ static func is_valid(state: BoardState, origin: Vector2i, target: Vector2i, _ver
 static func can_attack(state: BoardState, origin: Vector2i, target: Vector2i, _verbose := false) -> bool:
 	var origin_piece := state.get_piece(origin)
 
-	match origin_piece.get_type():
-		Piece.Ptype.KNIGHT:
-			return knight_shape_valid(state, origin, target)
-		Piece.Ptype.KING:
-			return king_shape_valid(state, origin, target)
-		Piece.Ptype.ROOK:
-			return rook_shape_valid(state, origin, target)
-		Piece.Ptype.BISHOP:
-			return bishop_shape_valid(state, origin, target)
-		Piece.Ptype.QUEEN:
-			return queen_shape_valid(state, origin, target)
-		Piece.Ptype.PAWN:
-			return pawn_attacks_square(state, origin, target)
+	if origin_piece == null:
+		return false
 
-	return false
+	if origin_piece.get_type() == Piece.Ptype.PAWN:
+		return pawn_attacks_square(state, origin, target)
 
+	return target in MoveGenerator.gen_pseudo_moves(state, origin)
 
 static func get_valid_moves(state: BoardState, origin: Vector2i) -> Array:
 	var valid_moves := []
@@ -52,36 +43,6 @@ static func get_valid_moves(state: BoardState, origin: Vector2i) -> Array:
 			valid_moves.append(target)
 
 	return valid_moves
-
-const KNIGHT_OFFSETS := [
-	Vector2i(2, 1),
-	Vector2i(2, -1),
-	Vector2i(-2, 1),
-	Vector2i(-2, -1),
-	Vector2i(1, -2),
-	Vector2i(-1, -2),
-	Vector2i(1, 2),
-	Vector2i(-1, 2)
-]
-
-static func knight_shape_valid(_state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	var delta := target - origin
-	return delta in KNIGHT_OFFSETS
-
-const KING_OFFSETS := [
-	Vector2i(1, 1),
-	Vector2i(-1, -1),
-	Vector2i(-1, 1),
-	Vector2i(1, -1),
-	Vector2i(-1, 0),
-	Vector2i(1, 0),
-	Vector2i(0, 1),
-	Vector2i(0, -1)
-]
-
-static func king_shape_valid(_state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	var delta := target - origin
-	return delta in KING_OFFSETS
 
 static func is_square_attacked(state: BoardState, square: Vector2i, by_color: BoardState.Turn) -> bool:
 	for occupied in state.get_occupied_squares():
@@ -111,38 +72,6 @@ static func move_keeps_king_safe(state: BoardState, origin: Vector2i, target: Ve
 
 	return not is_square_attacked(test_state,king_square,enemy_color)
 
-static func path_clear(state: BoardState, origin: Vector2i, target: Vector2i, direction: Vector2i) -> bool:
-	var current := origin + direction
-
-	while current != target:
-		if state.has_piece(current):
-			return false
-		current += direction
-	
-	return true
-
-static func rook_shape_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	var delta := target - origin
-
-	if delta.x != 0 and delta.y != 0:
-		return false
-
-	var direction := Vector2i(sign(delta.x), sign(delta.y))
-
-	return path_clear(state, origin, target, direction)
-
-static func bishop_shape_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	var delta := target - origin
-
-	if abs(delta.x) != abs(delta.y):
-		return false
-	
-	var dierection := Vector2i(sign(delta.x), sign(delta.y))
-	return path_clear(state, origin, target, dierection)
-
-static func queen_shape_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	return rook_shape_valid(state, origin, target) or bishop_shape_valid(state, origin, target)
-
 static func pawn_attacks_square(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
 	var pawn := state.get_piece(origin)
 
@@ -153,25 +82,3 @@ static func pawn_attacks_square(state: BoardState, origin: Vector2i, target: Vec
 	
 	var delta := target - origin
 	return abs(delta.x) == 1 and delta.y == dir
-
-static func pawn_shape_valid(state: BoardState, origin: Vector2i, target: Vector2i) -> bool:
-	var pawn := state.get_piece(origin)
-	var dir := -1
-
-	if pawn.get_color() == BoardState.Turn.BLACK:
-		dir = 1
-
-	var delta := target - origin
-
-	if delta == Vector2i(0, dir):
-		return not state.has_piece(target)
-
-	if not pawn.has_moved and delta == Vector2i(0, dir * 2):
-		#is there a blocker inbetween?
-		var middle := origin + Vector2i(0, dir)
-		return not state.has_piece(target) and not state.has_piece(middle)
-
-	if abs(delta.x) == 1 and delta.y == dir:
-		return state.has_piece(target)
-	
-	return false
