@@ -44,7 +44,6 @@ func get_color(color : Turn) -> Array:
 
 	return pieces
 
-
 func same_color_at(origin: Vector2i, target: Vector2i) -> bool:
 	var orig_piece := get_piece(origin)
 	var target_piece := get_piece(target)
@@ -96,6 +95,6 @@ func copy() -> BoardState:
 		"fullmove":fullmove
 	})
 
-func _notification(what: int) -> void:
-	if (what == NOTIFICATION_PREDELETE):
-		print("freeing BoardState")
+#func _notification(what: int) -> void:
+#	if (what == NOTIFICATION_PREDELETE):
+#		print("freeing BoardState")
