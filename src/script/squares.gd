@@ -60,7 +60,7 @@ func _ready() -> void:
 	board_state = BoardState.new(state)
 	draw_board_state()
 
-	gen_possible_moves(board_state.whose_turn())
+	cache_valid_moves_for(board_state.whose_turn())
 
 
 func board_to_world(square: Vector2i) -> Vector2:
@@ -189,12 +189,12 @@ func try_select_square(square: Vector2i):
 func try_target_square(square: Vector2i):
 	if board_state.attempt_move(selected_square, square):
 		draw_board_state()
-		gen_possible_moves(board_state.whose_turn())
+		cache_valid_moves_for(board_state.whose_turn())
 	else:
 		print("move failed")
 	clear_move_highlights(true)
 
-func gen_possible_moves(color : BoardState.Turn):
+func cache_valid_moves_for(color : BoardState.Turn):
 	var squares := board_state.get_color(color)
 	for square in squares:
 		var moves := MoveValidator.get_valid_moves(board_state, square)
