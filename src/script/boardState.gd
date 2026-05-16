@@ -131,8 +131,27 @@ func is_en_passant_capture(origin: Vector2i, target: Vector2i) -> bool:
 	
 	if has_piece(target):
 		return false
+
+	var dir := -1
+	if piece.get_color() == Turn.BLACK:
+		dir = 1
+
+	if target.y - origin.y != dir:
+		return false
 	
-	return abs(target.x - origin.x) == 1
+	if abs(target.x - origin.x) != 1:
+		return false
+
+	var captured_square := Vector2i(target.x, origin.y)
+	var captured_piece := get_piece(captured_square)
+
+	if captured_piece == null:
+		return false
+	
+	if captured_piece.get_type() != Piece.Ptype.PAWN:
+		return false
+	
+	return captured_piece.get_color() != piece.get_color()
 
 func copy() -> BoardState:
 	var coppied_board := {}
