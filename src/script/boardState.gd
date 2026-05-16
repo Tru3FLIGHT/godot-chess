@@ -18,6 +18,9 @@ func turn_to_string() -> String:
 		return "White"
 	return "Black"
 
+func opposite_turn(a: Turn) -> Turn:
+	return Turn.BLACK if a == Turn.WHITE else Turn.WHITE
+
 func _init(data := {}) -> void:
 	board = data.get("board", {})
 	turn = data.get("turn", Turn.WHITE) 
@@ -34,6 +37,14 @@ func get_piece(square: Vector2i) -> Piece:
 
 func get_occupied_squares() -> Array:
 	return board.keys()
+
+func is_in_check(color: Turn) -> bool:
+	var king := MoveValidator.find_king(self, color)
+
+	if MoveValidator.is_square_attacked(self, king, opposite_turn(color)):
+		return true
+	else:
+		return false
 
 func get_color(color : Turn) -> Array:
 	var pieces := []
@@ -67,7 +78,7 @@ func end_turn():
 	for square in get_occupied_squares():
 		get_piece(square).clear_moves()
 
-	turn = Turn.BLACK if turn == Turn.WHITE else Turn.WHITE
+	turn = opposite_turn(turn)
 	print(turn_to_string(),"'s turn")
 
 func move_piece(origin: Vector2i, target: Vector2i) -> bool:

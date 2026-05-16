@@ -201,8 +201,6 @@ func cache_valid_moves_for(color : BoardState.Turn):
 		var moves := MoveValidator.get_valid_moves(board_state, square)
 		board_state.get_piece(square).set_moves(moves)
 
-	if MoveValidator.is_square_attacked(board_state, board_state.)
-
 func show_vaild_moves(square: Vector2i):
 	if not board_state.has_piece(square):
 		return
