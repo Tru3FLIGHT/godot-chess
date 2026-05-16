@@ -90,7 +90,7 @@ func highlight_under_cursor(square: Vector2i) -> void:
 	if on_screen(square):
 		if not highlight.visible:
 			highlight.show()
-		print("Square: ", square)
+		#print("Square: ", square)
 		highlight.position = Vector2(square.x*TILE_SIZE, square.y*TILE_SIZE)
 	else:
 		highlight.hide()
@@ -196,10 +196,21 @@ func try_target_square(square: Vector2i):
 
 func cache_valid_moves_for(color : BoardState.Turn):
 	print("bulding cache for: ", board_state.turn_to_string())
+	var possible_moves := 0
 	var squares: Array = board_state.get_color(color)
 	for square in squares:
 		var moves := MoveValidator.get_valid_moves(board_state, square)
+		possible_moves += len(moves)
 		board_state.get_piece(square).set_moves(moves)
+	
+	var check := board_state.is_in_check(color)
+	if possible_moves == 0 and check:
+		print("checkmate")
+	elif check:
+		print("check")
+	elif possible_moves == 0:
+		print("Draw")
+
 
 func show_vaild_moves(square: Vector2i):
 	if not board_state.has_piece(square):
