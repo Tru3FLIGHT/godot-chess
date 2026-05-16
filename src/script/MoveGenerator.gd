@@ -133,7 +133,7 @@ static func gen_pawn_pseudo(state: BoardState, origin: Vector2i) -> Array:
 		if pawn_capture(state, target, pawn):
 			moves.append(target)
 
-		if on_board(target) and state.en_passant == target:
+		if on_board(target) and state.en_passant == target and not state.has_piece(target):
 			moves.append(target)
 	
 	return moves

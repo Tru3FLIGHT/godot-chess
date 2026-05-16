@@ -85,11 +85,54 @@ func move_piece(origin: Vector2i, target: Vector2i) -> bool:
 	if not has_piece(origin):
 		return false
 
-	var origin_piece: Piece = board.get(origin)
+	var origin_piece: Piece = get_piece(origin)
+	var was_en_passant := is_en_passant_capture(origin, target)
+
 	board.erase(origin)
+
+	if was_en_passant:
+		var captured_pawn_square := Vector2i(target.x, origin.y)
+		board.erase(captured_pawn_square)
+
 	board.set(target, origin_piece)
 	origin_piece.has_moved = true
+
+	en_passant = null
+
+	if is_pawn_double_move_for(origin_piece, origin, target):
+		en_passant = get_en_passant_target(origin, target)
+
 	return true
+
+func is_pawn_double_move_for(piece: Piece, origin: Vector2i, target: Vector2i) -> bool:
+	if piece.get_type() != Piece.Ptype.PAWN:
+		return false
+	
+	return abs(target.y - origin.y) == 2
+
+#assumes a double moved happened
+func get_en_passant_target(origin: Vector2i, target: Vector2i) -> Vector2i:
+	@warning_ignore("integer_division")
+	return Vector2i(origin.x, (origin.y + target.y) / 2)
+
+func is_en_passant_capture(origin: Vector2i, target: Vector2i) -> bool:
+	var piece := get_piece(origin)
+	if piece == null:
+		return false
+	
+	if piece.get_type() != Piece.Ptype.PAWN:
+		return false
+	
+	if en_passant == null:
+		return false
+	
+	if target != en_passant:
+		return false
+	
+	if has_piece(target):
+		return false
+	
+	return abs(target.x - origin.x) == 1
 
 func copy() -> BoardState:
 	var coppied_board := {}
