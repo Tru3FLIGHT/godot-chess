@@ -16,7 +16,6 @@ enum Ptype {
 	KING
 }
 
-
 func _init(data : Dictionary) -> void:
 	type = data.get("type", Ptype.PAWN)
 	color= data.get("color", BoardState.Turn.WHITE)

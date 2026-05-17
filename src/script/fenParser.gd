@@ -22,6 +22,23 @@ static func char_to_piece(fen_char: String) -> Dictionary:
 		"has_moved": false
 		}
 
+static func char_from_piece_type(new: Piece.Ptype, old: BoardState.Turn) -> String:
+	var upper := old != BoardState.Turn.BLACK
+	var character := ""
+
+	match new:
+		Piece.Ptype.PAWN : character = "p"
+		Piece.Ptype.KNIGHT : character = "n"
+		Piece.Ptype.BISHOP : character = "b"
+		Piece.Ptype.ROOK : character = "r"
+		Piece.Ptype.QUEEN : character = "q"
+		Piece.Ptype.KING : character = "k"
+
+	if upper:
+		character.to_upper()
+
+	return character
+
 static func parse_board(fen: String) -> Dictionary:
 	var board := {}
 	var ranks := fen.split("/")

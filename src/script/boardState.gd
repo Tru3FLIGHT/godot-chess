@@ -86,14 +86,15 @@ func move_piece(origin: Vector2i, target: Vector2i) -> bool:
 		return false
 
 	var origin_piece: Piece = get_piece(origin)
-	var was_en_passant := is_en_passant_capture(origin, target)
-
-	board.erase(origin)
-
-	if was_en_passant:
+	#removing en_passant target
+	if is_en_passant_capture(origin, target):
 		var captured_pawn_square := Vector2i(target.x, origin.y)
 		board.erase(captured_pawn_square)
 
+	if is_pawn_promoted(origin_piece, target):
+		origin_piece = promote_pawn(origin_piece)
+
+	board.erase(origin)
 	board.set(target, origin_piece)
 	origin_piece.has_moved = true
 
@@ -114,6 +115,27 @@ func is_pawn_double_move_for(piece: Piece, origin: Vector2i, target: Vector2i) -
 func get_en_passant_target(origin: Vector2i, target: Vector2i) -> Vector2i:
 	@warning_ignore("integer_division")
 	return Vector2i(origin.x, (origin.y + target.y) / 2)
+
+func is_pawn_promoted(origin_piece: Piece, target: Vector2i) -> bool:
+	if origin_piece.get_type() != Piece.Ptype.PAWN:
+		return false
+
+	var target_rank := 0
+	if origin_piece.get_color() == Turn.BLACK:
+		target_rank = 7
+	
+	return target.y == target_rank
+
+func promote_pawn(origin_piece: Piece) -> Piece:
+	if origin_piece.get_type() != Piece.Ptype.PAWN:
+		return origin_piece
+
+	return Piece.new({
+		"type" : Piece.Ptype.QUEEN,
+		"color" : origin_piece.get_color(),
+		"fen_char" : FenParser.char_from_piece_type(Piece.Ptype.QUEEN, origin_piece.get_color()),
+		"has_moved" : true
+	})
 
 func is_en_passant_capture(origin: Vector2i, target: Vector2i) -> bool:
 	var piece := get_piece(origin)

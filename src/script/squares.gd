@@ -5,8 +5,8 @@ const BOARD_SIZE := 8
 const TILE_SIZE := 64
 
 
-const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#const STARTING_STATE := "3k4/8/8/8/8/8/8/4K3 b KQkq - 0 1"
+#const STARTING_STATE := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+const STARTING_STATE := "p7/8/8/8/8/8/8/7P w KQkq - 0 1"
 
 @export
 var color_primary: Color
@@ -203,6 +203,11 @@ func _process(_delta: float) -> void:
 
 	if Input.is_action_just_pressed("DEBUG-PRINT_SELECTED"):
 		print(selected_square)
+
+	if Input.is_action_just_pressed("DEBUG-END_TURN"):
+		board_state.end_turn()
+		draw_board_state()
+		cache_valid_moves_for(board_state.whose_turn())
 
 
 	var mouse_pos := to_local(get_viewport().get_mouse_position())
