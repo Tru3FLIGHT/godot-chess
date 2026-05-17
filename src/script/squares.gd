@@ -53,7 +53,7 @@ func _ready() -> void:
 	highlight.move_to_front()
 	highlight.color = highlight_color
 	highlight.size = Vector2(TILE_SIZE,TILE_SIZE)
-	highlight.position = board_to_world(last_board_pos)
+	highlight.position = BoardGeometry.board_to_world(last_board_pos, TILE_SIZE)
 	highlight.hide()
 
 	var state := FenParser.parse(STARTING_STATE)
@@ -62,32 +62,11 @@ func _ready() -> void:
 
 	cache_valid_moves_for(board_state.whose_turn())
 
-
-func board_to_world(square: Vector2i) -> Vector2:
-	return Vector2(square.x * TILE_SIZE, square.y * TILE_SIZE)
-
-func world_to_board(coord: Vector2) -> Vector2i:
-	var board := Vector2i(floor(coord.x/TILE_SIZE), floor(coord.y / TILE_SIZE))
-	if board_valid(board.x) and board_valid(board.y):
-		return board
-	else: 
-		return Vector2i(-1,-1)
-
-func board_valid(num: int) -> bool:
-	return (7 >= num) and (0 <= num)
-
-func board_to_center(square: Vector2i) -> Vector2:
-	@warning_ignore("integer_division")
-	return Vector2(
-		square.x * TILE_SIZE + TILE_SIZE /2,
-		square.y * TILE_SIZE + TILE_SIZE /2
-	)
-
 func highlight_under_cursor(square: Vector2i) -> void:
 	if square == last_board_pos:
 		return
 
-	if on_screen(square):
+	if BoardGeometry.on_screen(square):
 		if not highlight.visible:
 			highlight.show()
 		#print("Square: ", square)
@@ -96,7 +75,7 @@ func highlight_under_cursor(square: Vector2i) -> void:
 		highlight.hide()
 
 func new_move_highlight(square: Vector2i, selection := false) -> void:
-	if not on_screen(square):
+	if not BoardGeometry.on_screen(square):
 		push_error("Cannot highlight square: ", square, " --- Not on board")
 		return
 	
@@ -145,13 +124,8 @@ func draw_board_state() -> void:
 			continue
 		
 		piece_node.scale = Vector2(0.40, 0.40)
-		piece_node.position = board_to_world(square)  
+		piece_node.position = BoardGeometry.board_to_world(square, TILE_SIZE)  
 		peices_layer.add_child(piece_node)
-
-func on_screen(board_pos: Vector2i) -> bool:
-	if board_pos >= Vector2i(0,0) and board_pos <= Vector2i(7,7):
-		return true
-	return false
 
 func make_board():
 	for y in range(BOARD_SIZE):
@@ -168,7 +142,7 @@ func make_board():
 			$squares.add_child(square)
 
 func square_clicked(square: Vector2i) -> void:
-	if not on_screen(square):
+	if not BoardGeometry.on_screen(square):
 		clear_move_highlights()
 		return
 
@@ -232,7 +206,7 @@ func _process(_delta: float) -> void:
 
 
 	var mouse_pos := to_local(get_viewport().get_mouse_position())
-	var board_pos := world_to_board(mouse_pos)
+	var board_pos := BoardGeometry.world_to_board(mouse_pos, TILE_SIZE)
 	if selected_square == Vector2i(-1,-1) or board_pos in current_board_highlights:
 		highlight_under_cursor(board_pos)
 	else:
@@ -244,7 +218,7 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			var square := world_to_board(to_local(event.position))
+			var square := BoardGeometry.world_to_board(to_local(event.position), TILE_SIZE)
 			square_clicked(square)
 		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 			clear_move_highlights()
